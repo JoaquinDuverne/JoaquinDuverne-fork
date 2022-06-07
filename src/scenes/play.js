@@ -141,7 +141,7 @@ export class Play extends Phaser.Scene {
     if (stars.countActive(true) === 0) {
       //  A new batch of stars to collect
       stars.children.iterate(function (child) {
-        child.enableBody(true, child.x, child.y + 10, true, true);
+        child.enableBody(true, child.x, child.y, true, true);
       });
 
       var x =
