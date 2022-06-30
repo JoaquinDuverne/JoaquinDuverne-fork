@@ -1,6 +1,7 @@
 // Declaracion de variables para esta escena
 var player;
 var stars;
+var moons;
 var bombs;
 var cursors;
 var score;
@@ -81,14 +82,26 @@ export class Play extends Phaser.Scene {
         }
       }
     });
+    moons = this.physics.add.group({
+      key: 'moon',
+      repeat: 5,
+      setXY: { x: 24, y: 300, stepX: 175 }
+  });
+
+  moons.children.iterate(function (child) {
+
+      //  Give each star a slightly different bounce
+      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+
+  });
 
     // Create empty group of bombs
     bombs = this.physics.add.group();
 
     //  The score
-    scoreText = this.add.text(30, 6, "score: 0", {
+    scoreText = this.add.text(30, 6, "Puntos Adquiridos: 0", {
       fontSize: "32px",
-      fill: "#000",
+      fill: "#ffff",
     });
 
     // Collide the player and the stars with the platforms
@@ -96,9 +109,12 @@ export class Play extends Phaser.Scene {
     this.physics.add.collider(player, worldLayer);
     this.physics.add.collider(stars, worldLayer);
     this.physics.add.collider(bombs, worldLayer);
+    this.physics.add.collider(moons, worldLayer);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     this.physics.add.overlap(player, stars, this.collectStar, null, this);
+    this.physics.add.overlap(player, moons, this.collectMoon, null, this);
+
 
     this.physics.add.collider(player, bombs, this.hitBomb, null, this);
 
@@ -143,6 +159,9 @@ export class Play extends Phaser.Scene {
       stars.children.iterate(function (child) {
         child.enableBody(true, child.x, child.y, true, true);
       });
+      moons.children.iterate(function (child) {
+
+      child.enableBody(true, child.x, 300, true, true);})
 
       var x =
         player.x < 400
@@ -155,6 +174,16 @@ export class Play extends Phaser.Scene {
       bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
     }
   }
+
+  collectMoon (player, moon)
+  {
+    moon.disableBody(true, true);
+
+    //  Add and update the score
+    score += 15;
+    scoreText.setText('Puntos Adquiridos: ' + score);
+  }
+
 
   hitBomb(player, bomb) {
     this.physics.pause();

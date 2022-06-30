@@ -16,6 +16,7 @@ export class Preloads extends Phaser.Scene {
     this.load.image("sky", "public/assets/images/sky.png");
     this.load.image("ground", "public/assets/images/platform.png");
     this.load.image("star", "public/assets/images/star.png");
+    this.load.image("moon", "public/assets/images/moon.png");
     this.load.image("bomb", "public/assets/images/bomb.png");
     this.load.spritesheet("dude", "public/assets/images/dude.png", {
       frameWidth: 32,
