@@ -7,38 +7,37 @@ var cursors;
 var score;
 var gameOver;
 var scoreText;
-var victorias = 0;
 
 // Clase Play, donde se crean todos los sprites, el escenario del juego y se inicializa y actualiza toda la logica del juego.
-export class Play extends Phaser.Scene {
+export class Play2 extends Phaser.Scene {
   constructor() {
     // Se asigna una key para despues poder llamar a la escena
-    super("Play");
+    super("Play2");
   }
 
   preload() {
-    this.load.tilemapTiledJSON("map", "public/assets/tilemaps/map.json");
+    this.load.tilemapTiledJSON("map2", "public/assets/tilemaps/map2.json");
     this.load.image("tilesBelow", "public/assets/images/sky_atlas.png");
     this.load.image("tilesPlatform", "public/assets/images/platform_atlas.png");
   }
 
   create() {
-    const map = this.make.tilemap({ key: "map" });
+    const map2 = this.make.tilemap({ key: "map2" });
 
     // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
     // Phaser's cache (i.e. the name you used in preload)
-    const tilesetBelow = map.addTilesetImage("sky_atlas", "tilesBelow");
-    const tilesetPlatform = map.addTilesetImage(
+    const tilesetBelow2 = map2.addTilesetImage("sky_atlas", "tilesBelow");
+    const tilesetPlatform2 = map2.addTilesetImage(
       "platform_atlas",
       "tilesPlatform"
     );
 
     // Parameters: layer name (or index) from Tiled, tileset, x, y
-    const belowLayer = map.createLayer("Fondo", tilesetBelow, 0, 0);
-    const worldLayer = map.createLayer("Plataformas", tilesetPlatform, 0, 0);
-    const objectsLayer = map.getObjectLayer("Objetos");
+    const belowLayer2 = map2.createLayer("Fondo", tilesetBelow2, 0, 0);
+    const worldLayer2 = map2.createLayer("Plataformas", tilesetPlatform2, 0, 0);
+    const objectsLayer2 = map2.getObjectLayer("Objetos");
 
-    worldLayer.setCollisionByProperty({ collides: true });
+    worldLayer2.setCollisionByProperty({ collides: true });
 
     // tiles marked as colliding
     /*
@@ -51,7 +50,7 @@ export class Play extends Phaser.Scene {
     */
 
     // Find in the Object Layer, the name "dude" and get position
-    const spawnPoint = map.findObject("Objetos", (obj) => obj.name === "dude");
+    const spawnPoint = map2.findObject("Objetos", (obj) => obj.name === "dude");
     // The player and its settings
     player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "dude");
 
@@ -69,7 +68,7 @@ export class Play extends Phaser.Scene {
 
     // find object layer
     // if type is "stars", add to stars group
-    objectsLayer.objects.forEach((objData) => {
+    objectsLayer2.objects.forEach((objData) => {
       //console.log(objData.name, objData.type, objData.x, objData.y);
 
       const { x = 0, y = 0, name, type } = objData;
@@ -107,10 +106,10 @@ export class Play extends Phaser.Scene {
 
     // Collide the player and the stars with the platforms
     // REPLACE Add collision with worldLayer
-    this.physics.add.collider(player, worldLayer);
-    this.physics.add.collider(stars, worldLayer);
-    this.physics.add.collider(bombs, worldLayer);
-    this.physics.add.collider(moons, worldLayer);
+    this.physics.add.collider(player, worldLayer2);
+    this.physics.add.collider(stars, worldLayer2);
+    this.physics.add.collider(bombs, worldLayer2);
+    this.physics.add.collider(moons, worldLayer2);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     this.physics.add.overlap(player, stars, this.collectStar, null, this);
@@ -124,13 +123,6 @@ export class Play extends Phaser.Scene {
   }
 
   update() {
-
-    if (victorias == 1) {
-    this.scene.start("Play2",);
-    }
-
-
-
     if (gameOver) {
       return;
     }
@@ -160,12 +152,10 @@ export class Play extends Phaser.Scene {
 
     //  Add and update the score
     score += 10;
-    scoreText.setText("Puntos adquiridos: " + score);
+    scoreText.setText("Puntos Adquiridos: " + score);
 
     if (stars.countActive(true) === 0) {
       //  A new batch of stars to collect
-
-      victorias++
 
       stars.children.iterate(function (child) {
         child.enableBody(true, child.x, child.y, true, true);
